@@ -61,13 +61,14 @@ SC_MODULE(xfer_buffer) {
 		sensitive << clock_host.pos() << clock_host.neg() << reset;
 
 		SC_THREAD(tophalf_process);
-		sensitive << host_select << hwrite_enable;
+		sensitive << host_select << hwrite_enable << clock_host.pos() << clock_host.neg();
 
 		SC_THREAD(bottomhalf_process);
 		sensitive << xfer_buf_select << mwrite_enable << clock_fpga.neg() << clock_fpga.pos();
 
 		SC_THREAD(gs_process);
 		sensitive << gs_select << gs_write_enable;
+
 	}
 };
 
@@ -96,7 +97,7 @@ void xfer_buffer::tophalf_process(void)
 	{
 		wait();
 
-		xfer_complete.write(0); // confirm if this code operates according to the design.
+//		xfer_complete.write(0); // confirm if this code operates according to the design.
 
 		if (host_select.read() == 1)
 		{
@@ -105,6 +106,8 @@ void xfer_buffer::tophalf_process(void)
 			{
 				// buf_address is not required!!.. if you need to implement..
 				rx_buffer[(rx_head*NUM_DATA_WIDTH_PER_BUF) + htoBufOffset].range(((HDATA_WIDTH * (htoBufBitOffset+1)) - 1), (HDATA_WIDTH * htoBufBitOffset)) = hostdata_inout.read();
+				cout << "xfer_buf>> @" << sc_time_stamp() << ", data: " << hostdata_inout << endl;
+		
 				htoBufBitOffset++;
 				if (htoBufBitOffset == DATA_WIDTH_DIFF)
 				{

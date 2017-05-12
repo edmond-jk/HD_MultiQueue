@@ -96,7 +96,31 @@ void test_case_1(void)
 		{
 			cout << "@" << sc_time_stamp() <<", general status:" << gs_out << endl;
 		}
+		sc_start(0.25, SC_NS);
+	
+		gs_select = 0;
+		gs_write_enable = 1;
+		cout << "-->@" << sc_time_stamp() << ", general status:" << gs_out << endl;
 	}
+
+	host_select = 1;
+	hwrite_enable = 1;
+	buf_address = 0;
+	for (i = 0; i < 1024; i++)
+	{
+		hostdata_inout = i;
+		sc_start(0.5, SC_NS);
+	}
+
+	xfer_buf_select = 1;
+	mwrite_enable = 0;
+	tbm_address = 0;
+	
+	for (i = 0; i < 1024; i++)
+	{
+		sc_start(0.5, SC_NS);
+	}
+	
 }
 
 int sc_main(int argc, char**argv)
