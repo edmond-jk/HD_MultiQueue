@@ -17,7 +17,7 @@ SC_MODULE(xfer_buffer) {
 	sc_in<bool> 					clock_host;
 	sc_in<bool> 					host_select;
 	sc_in<bool> 					hwrite_enable;
-	sc_in<sc_uint<32> > 			buf_address;
+	sc_in<sc_uint<32> > 			buf_address; // obsolete... need to confirm the usage of this channel
 	sc_inout<sc_uint<HDATA_WIDTH> >	hostdata_inout;
 
 	// interface command queue --> xfer buffer
@@ -30,7 +30,7 @@ SC_MODULE(xfer_buffer) {
 	// xfer buffer <-> tbm
 	sc_out<bool> 					chip_select;
 	sc_out<bool> 					write_enable;
-	sc_out<sc_uint<MADDR_WIDTH> > 			maddress;
+	sc_out<sc_uint<MADDR_WIDTH> > 	maddress;
 	sc_inout<sc_biguint<MDATA_WIDTH> >	mdata_inout;
 
 	// General status read/write

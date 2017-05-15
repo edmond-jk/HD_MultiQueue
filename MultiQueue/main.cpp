@@ -121,7 +121,7 @@ void test_case_1(void)
 	mwrite_enable = 1;
 	tbm_address = 0;
 	
-	for (i = 0; i < 1024; i++)
+	for (i = 0; i < 128; i++)
 	{
 		sc_start(0.5, SC_NS);
 	}
@@ -130,7 +130,7 @@ void test_case_1(void)
 	mwrite_enable = 0;
 	tbm_address = 0;
 	
-	for (i = 0; i < 1024; i++)
+	for (i = 0; i < 128; i++)
 	{
 		sc_start(0.5, SC_NS);
 	}
@@ -139,10 +139,7 @@ void test_case_1(void)
 
 int sc_main(int argc, char**argv)
 {
-	// tbm test
-//	test_case_0();
-
-	// xfer_buffer test
+	// (tbm + xfer_buffer) test
 	test_case_1();
 
 	return 0;

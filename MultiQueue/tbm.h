@@ -57,6 +57,7 @@ void ram_dp_ar_aw::READ_0(void)
 {
 	if (cs_0.read() && !we_0.read())
 	{
+		cout << "Write operation..@maddress: " << address_0.read() << ", data:" << hex << mem[address_0.read()] << endl;
 		data_0 = mem[address_0.read()];
 	}
 }
@@ -73,7 +74,7 @@ void ram_dp_ar_aw::WRITE_0(void)
 {
 	if (cs_0.read() && we_0.read())
 	{
-		cout << "Write operation..@maddress: " << address_0.read() << ", data:" << data_0.read() << endl;
+		cout << "Write operation..@maddress: " << address_0.read() << ", data:" << hex << data_0.read() << endl;
 
 		mem[address_0.read()] = data_0.read();
 	}
