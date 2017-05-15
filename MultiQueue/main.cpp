@@ -1,6 +1,7 @@
 #include "tbm.h"
 #include "xfer_buffer.h"
 
+/* tbm + xfer_buf integration test*/
 void test_case_1(void)
 {
 	// to/from interface
@@ -86,6 +87,8 @@ void test_case_1(void)
 
 	sc_start(1, SC_NS);
 
+	reset = 0; 
+
 	gs_select = 1;
 	gs_write_enable = 1;
 
@@ -112,6 +115,17 @@ void test_case_1(void)
 		sc_start(0.5, SC_NS);
 	}
 
+	host_select = 0;
+
+	xfer_buf_select = 1;
+	mwrite_enable = 1;
+	tbm_address = 0;
+	
+	for (i = 0; i < 1024; i++)
+	{
+		sc_start(0.5, SC_NS);
+	}
+	
 	xfer_buf_select = 1;
 	mwrite_enable = 0;
 	tbm_address = 0;

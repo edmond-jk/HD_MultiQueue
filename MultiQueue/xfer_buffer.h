@@ -58,7 +58,7 @@ SC_MODULE(xfer_buffer) {
 	SC_CTOR(xfer_buffer) {
 		SC_METHOD(core_process);
 		dont_initialize();
-		sensitive << clock_host.pos() << clock_host.neg() << reset;
+		sensitive << reset;
 
 		SC_THREAD(tophalf_process);
 		sensitive << host_select << hwrite_enable << clock_host.pos() << clock_host.neg();
@@ -97,19 +97,24 @@ void xfer_buffer::tophalf_process(void)
 	{
 		wait();
 
-//		xfer_complete.write(0); // confirm if this code operates according to the design.
-
+		/*
+		Host transfer 32bit data every clock.. xfer_buffer automatially receive/send the data. 
+		*/
 		if (host_select.read() == 1)
 		{
 			// host --> xfer_buf
 			if (hwrite_enable.read() == 1)
 			{
 				// buf_address is not required!!.. if you need to implement..
+				cout << "rx_head:" << rx_head << ", NUM_DATA_WIDTH_PER_BUF:"<< NUM_DATA_WIDTH_PER_BUF <<",  htoBufOffset:" << htoBufOffset << endl;
+				cout << "rx_buffer idx:" << rx_head*NUM_DATA_WIDTH_PER_BUF + htoBufOffset << endl;
+				cout << "bit range upper limit:" << HDATA_WIDTH*(htoBufBitOffset + 1) - 1 << endl;
+				cout << "bit range lower limit:" << HDATA_WIDTH*(htoBufBitOffset) << endl;
 				rx_buffer[(rx_head*NUM_DATA_WIDTH_PER_BUF) + htoBufOffset].range(((HDATA_WIDTH * (htoBufBitOffset+1)) - 1), (HDATA_WIDTH * htoBufBitOffset)) = hostdata_inout.read();
 				cout << "xfer_buf>> @" << sc_time_stamp() << ", data: " << hostdata_inout << endl;
 		
 				htoBufBitOffset++;
-				if (htoBufBitOffset == DATA_WIDTH_DIFF)
+				if (htoBufBitOffset == DATA_WIDTH_DIFF) // DATA_WIDTH_DIFF == 8
 				{
 					htoBufBitOffset = 0;
 					htoBufOffset++;
@@ -124,7 +129,6 @@ void xfer_buffer::tophalf_process(void)
 						if (rx_head == BUF_QUEUE_DEPTH)
 						{
 							rx_head = 0;
-							xfer_complete.write(1);
 						}
 					}
 				}
@@ -158,7 +162,6 @@ void xfer_buffer::tophalf_process(void)
 							if (tx_tail == BUF_QUEUE_DEPTH)
 							{
 								tx_tail = 0;
-								xfer_complete.write(1);
 							}
 						}
 					}
@@ -184,7 +187,7 @@ void xfer_buffer::bottomhalf_process(void)
 
 		xfer_complete.write(0);
 
-		if (xfer_buf_select.read() == 1)
+		if ((mxferprocessing == 0) && (xfer_buf_select.read() == 1))
 		{
 			// xfer_buf --> tbm
 			if (mwrite_enable.read() == 1)

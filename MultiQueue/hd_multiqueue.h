@@ -8,21 +8,18 @@
 #ifndef HD_MULTIQUEUE_H_
 #define HD_MULTIQUEUE_H_
 
-#define HDATA_WIDTH_SFT				2	// 4 Bytes (32 bits)
-#define HDATA_WIDTH					1 << (HDATA_WIDTH_SFT + 3) // bits
-#define MDATA_WIDTH_SFT				5	// 32 Bytes (256 bits)
-#define MDATA_WIDTH					1 << (MDATA_WIDTH_SFT + 3) // bits
-#define DATA_WIDTH_DIFF				1 << (MDATA_WIDTH_SFT - HDATA_WIDTH_SFT) // 8
-#define BUF_QUEUE_DEPTH_SFT			2 	// 4
-#define BUF_QUEUE_DEPTH 			1 << BUF_QUEUE_DEPTH_SFT
-#define BUF_SIZE_SFT				12 	// 4096 Bytes
-#define BUF_SIZE					1 << BUF_SIZE_SFT
-#define NUM_DATA_WIDTH_FOR_XFER_BUF	1 << (BUF_SIZE_SFT - MDATA_WIDTH_SFT + BUF_QUEUE_DEPTH_SFT)
-#define NUM_DATA_WIDTH_PER_BUF		1 << (BUF_SIZE_SFT - MDATA_WIDTH_SFT)
-#define MADDR_WIDTH					32 // TODO: should be modified
+#define HDATA_WIDTH					32  // bits
+#define MDATA_WIDTH					256 // Bits
+#define DATA_WIDTH_DIFF				8	// MDATA_WIDTH / HDATA_WIDTH
+#define BUF_QUEUE_DEPTH 			4	// 
+#define BUF_SIZE					4096 // Bytes 
+#define NUM_DATA_WIDTH_FOR_XFER_BUF	512 // BUF_SIZE / MDATA_WIDTH x BUF_QUEUE_DEPTH)
+#define NUM_DATA_WIDTH_PER_BUF		128 // BUF_SIZE / MDATA_WIDTH
+
+#define MADDR_WIDTH					32 // bits TODO: should be modified
 
 #define MAX_CMDQ_DEPTH				32
-#define MAX_BUF_PER_CMD			8 		//number of 16KB buffers
+#define MAX_BUF_PER_CMD				8 	//number of 16KB buffers
 
 // CMDQ Status Transition
 #define ST_FREE						0x00
@@ -60,6 +57,8 @@
 #define BASE_RQSZ					96
 #define RQSZ_WIDTH					16 		// max. request size per buffer --> 32 MB
 
+#define BASE_INDEX					24
+#define INDEX_WIDTH					8
 /*
  * Query Command Status
  */

@@ -11,7 +11,7 @@
 #include <systemc.h>
 #include "hd_multiqueue.h"
 
-#define RAM_DEPTH	1 << 10 // 32Byte x 1024 x 1024 --> 32Byte x 2^20 --> 32MB, TODO:
+#define RAM_DEPTH	1 << 14 // 32Byte x 1024 x 1024 --> 32Byte x 2^20 --> 32MB, TODO:
 
 /*
  * cs: chip select
@@ -73,6 +73,8 @@ void ram_dp_ar_aw::WRITE_0(void)
 {
 	if (cs_0.read() && we_0.read())
 	{
+		cout << "Write operation..@maddress: " << address_0.read() << ", data:" << data_0.read() << endl;
+
 		mem[address_0.read()] = data_0.read();
 	}
 }
