@@ -8,6 +8,8 @@
 #ifndef TBM_H_
 #define TBM_H_
 
+#pragma warning( disable : 4244)
+
 #include <systemc.h>
 #include "hd_multiqueue.h"
 

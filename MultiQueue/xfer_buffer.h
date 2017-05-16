@@ -216,6 +216,9 @@ void xfer_buffer::bottomhalf_process(void)
 				write_enable.write(1);
 				maddress.write(rx_address); // TODO: revised
 				mdata_inout = rx_buffer[((rx_tail * NUM_DATA_WIDTH_PER_BUF) + mfromBufOffset)];
+
+				cout << "@" << sc_time_stamp() << ", offset by 32B: " << mfromBufOffset << endl;
+
 				mfromBufOffset++;
 				if (mfromBufOffset == NUM_DATA_WIDTH_PER_BUF)
 				{

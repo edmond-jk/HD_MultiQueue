@@ -39,6 +39,7 @@
 #define BSM_READ					0x30
 #define BSM_WRITE					0x40
 
+// Bit field for a HD command descriptor.
 #define BASE_ADDR					128 	//from 128 bit position
 #define ADDR_WIDTH					16		//every 16 bit
 

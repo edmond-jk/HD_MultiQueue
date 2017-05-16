@@ -8,6 +8,8 @@
 #ifndef IFQUEUE_H_
 #define IFQUEUE_H_
 
+#pragma warning( disable : 4244)  // type conversion from sc_uint to sc_int or int... static_cast doesn't work
+
 #include <systemc.h>
 #include "hd_multiqueue.h"
 
@@ -17,7 +19,7 @@ SC_MODULE(IF_QUEUE) {
 	// for DRAM Interface/Parser
 	sc_in<bool> 						clock_host;
 	sc_in<bool> 						cmdq_select;
-	sc_in<sc_biguint<HDATA_WIDTH> > 	cmd_in; // 4 Bytes
+	sc_in<sc_uint<HDATA_WIDTH> > 	cmd_in; // 4 Bytes
 	// For xfer_buf
 	sc_in<bool>							clock_fpga;
 	sc_out<bool>						xfer_buf_select;
@@ -78,10 +80,7 @@ void IF_QUEUE::core_process(void)
 		head = tail = current = 0;
 		in_offset = out_offset = 0;
 
-		cout << "@" << sc_time_stamp() << ", head: " << head
-				<< ", tail: " << tail
-				<< ", in_offset: "<< in_offset
-				<< ", out_offset: "<< out_offset << endl;
+		cout << "@" << sc_time_stamp() << ", head: " << head << ", tail: " << tail << ", in_offset: "<< in_offset << ", out_offset: "<< out_offset << endl;
 	}
 
 	if (xfer_complete.read() == 1)
@@ -99,13 +98,16 @@ void IF_QUEUE::receive_cmd(void)
 
 		if (cmdq_select.read() == 1)
 		{
-			ifcmdQ[head].range(HDATA_WIDTH*(in_offset + 1) - 1, HDATA_WIDTH*in_offset) = cmd_in;
+			ifcmdQ[head].range((HDATA_WIDTH*(in_offset + 1) - 1), (HDATA_WIDTH*in_offset)) = cmd_in;
+			cout << "receive cmd] offset:" << in_offset << ", incomming command:" << cmd_in << endl;
 
 			in_offset++;
 			if (in_offset == DATA_WIDTH_DIFF)
 			{
 				in_offset = 0;
 				ifcmdQ[head].range(BASE_STATUS+STATUS_WIDTH-1, BASE_STATUS) = ST_QUEUED2D;
+
+				cout << "receive cmd is done" << endl;
 
 				head++;
 				if (head == MAX_CMDQ_DEPTH)
@@ -137,8 +139,11 @@ void IF_QUEUE::process_cmd(void)
 			 * Supposed that all requests should be 16KB boundary...
 			 * If needed, this part has to be modified afterwards..
 			 */
-			num_rqsz = ifcmdQ[current].range(BASE_RQSZ + RQSZ_WIDTH -1, BASE_RQSZ) >> 5;
+	//		num_rqsz = ifcmdQ[current].range(BASE_RQSZ + RQSZ_WIDTH -1, BASE_RQSZ) >> 5;
+			num_rqsz = ifcmdQ[current].range(BASE_RQSZ + RQSZ_WIDTH -1, BASE_RQSZ) >> 3; // 4KB.. 8 sectors
 
+			cout << "@" << sc_time_stamp() << ", request size:" << num_rqsz << endl;
+			
 			i = 0;
 
 			// xfer_buf --> tbm
