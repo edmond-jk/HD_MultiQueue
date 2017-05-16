@@ -1,0 +1,11 @@
+﻿  main.cpp
+  Unknown compiler version - please run the configure tests and report the results
+c:\users\jk\documents\visual studio 2017\projects\hd_multiqueue\multiqueue\tbm.h(60): warning C4244: 'argument': conversion from 'sc_dt::uint_type' to 'int', possible loss of data
+c:\users\jk\documents\visual studio 2017\projects\hd_multiqueue\multiqueue\tbm.h(61): warning C4244: 'argument': conversion from 'sc_dt::uint_type' to 'int', possible loss of data
+c:\users\jk\documents\visual studio 2017\projects\hd_multiqueue\multiqueue\tbm.h(69): warning C4244: 'argument': conversion from 'sc_dt::uint_type' to 'int', possible loss of data
+c:\users\jk\documents\visual studio 2017\projects\hd_multiqueue\multiqueue\tbm.h(79): warning C4244: 'argument': conversion from 'sc_dt::uint_type' to 'int', possible loss of data
+c:\users\jk\documents\visual studio 2017\projects\hd_multiqueue\multiqueue\tbm.h(87): warning C4244: 'argument': conversion from 'sc_dt::uint_type' to 'int', possible loss of data
+c:\users\jk\documents\visual studio 2017\projects\hd_multiqueue\multiqueue\xfer_buffer.h(113): warning C4244: 'argument': conversion from 'sc_dt::uint_type' to 'int', possible loss of data
+c:\users\jk\documents\visual studio 2017\projects\hd_multiqueue\multiqueue\xfer_buffer.h(144): warning C4244: 'argument': conversion from 'sc_dt::uint_type' to 'int', possible loss of data
+  MultiQueue.vcxproj -> C:\Users\JK\Documents\Visual Studio 2017\Projects\HD_MultiQueue\Debug\MultiQueue.exe
+  MultiQueue.vcxproj -> C:\Users\JK\Documents\Visual Studio 2017\Projects\HD_MultiQueue\Debug\MultiQueue.pdb (Partial PDB)
