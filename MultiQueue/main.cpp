@@ -245,6 +245,37 @@ void test_case_2(void)
 	ifq.status_update_enable(status_update_enable);
 	ifq.cmdq_index(cmdq_index);
 
+	// save wave form
+	sc_trace_file *wf = sc_create_vcd_trace_file("hd_mq");
+	sc_trace(wf, ifq.clock_host, "ifq.clock_host");
+	sc_trace(wf, ifq.clock_fpga, "ifq.clock_fpga");
+	
+	sc_trace(wf, ifq.cmdq_select, "ifq.cmdq_select");
+	sc_trace(wf, ifq.cmd_in, "ifq.cmd_in");
+	sc_trace(wf, ifq.queryin_select, "ifq.queryin_select");
+	sc_trace(wf, ifq.queryout_select, "ifq.queryout_select");
+	sc_trace(wf, ifq.querydata_inout, "ifq.querydata_inout");
+
+	sc_trace(wf, xfer_select_con, "xfer_select_con");
+	sc_trace(wf, mwrite_enable_con, "mwrite_enable_con");
+	sc_trace(wf, tbm_address_con, "tbm_address_con");
+	sc_trace(wf, xfer_complete_con, "xfer_complete_con");
+
+	sc_trace(wf, cs_con, "cs_con");
+	sc_trace(wf, we_con, "we_con");
+	sc_trace(wf, maddress_con, "maddress_con");
+	sc_trace(wf, mdata_io_con, "mdata_io_con");
+
+	sc_trace(wf, gs_select, "gs_select");
+	sc_trace(wf, gs_write_enable, "gs_write_enable");
+	sc_trace(wf, gs_out_enable, "gs_out_enable");
+	sc_trace(wf, gs_out, "gs_out");
+
+	sc_trace(wf, host_select, "host_select");
+	sc_trace(wf, hwrite_enable, "hwrite_enable");
+	sc_trace(wf, hostdata_inout, "hostdata_inoout");
+
+
 	sc_start(0, SC_NS);
 	/*
 	 * BSM WRITE
@@ -280,7 +311,7 @@ void test_case_2(void)
 	}
 	cmdq_select = 0;
 
-	// 2. query general write status
+	// 2. General write status to confirm if buffers are available. 
 	gs_select = 1;
 	gs_write_enable = 1;
 
@@ -288,6 +319,8 @@ void test_case_2(void)
 	if (gs_out_enable == 1)
 	{
 		cout << "@" << sc_time_stamp() <<", general status:" << gs_out.read() << endl;
+		gs_select = 0;
+
 		if (gs_out.read() != 0)
 		{
 			host_select = 1;
@@ -299,10 +332,30 @@ void test_case_2(void)
 				hostdata_inout = i;
 				sc_start(0.5, SC_NS);
 			}
+
+			host_select = 0;
 		}
 	}
 
 	sc_start(100, SC_NS);
+	
+	// 3. Query command to confirm if write operation is done..
+	queryin_select = 1;
+	querydata_inout = 0;
+
+	sc_start(0.5, SC_NS);
+	if (queryout_select.read() == 1)
+	{
+		cout << "@" << sc_time_stamp() << ", status:" << querydata_inout.read() <<endl;
+		queryin_select = 0;
+	}
+	
+	sc_start(10, SC_NS);
+	
+
+
+
+	sc_close_vcd_trace_file(wf);
 
 }
 

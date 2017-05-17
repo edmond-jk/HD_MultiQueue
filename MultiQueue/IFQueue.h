@@ -69,7 +69,7 @@ SC_MODULE(IF_QUEUE) {
 		sensitive << status_update_enable;
 
 		SC_THREAD(close_cmd);
-		sensitive << xfer_complete;
+		sensitive << xfer_complete << clock_host.neg() << clock_host.pos();
 	}
 };
 
@@ -149,7 +149,11 @@ void IF_QUEUE::process_cmd(void)
 			// xfer_buf --> tbm
 			if (ifcmdQ[current].range(BASE_CMD + CMD_WIDTH - 1, BASE_CMD) == BSM_WRITE)
 			{
+				cout << "1. ifcmdQ:" << ifcmdQ[current] << endl;
+
 				ifcmdQ[current].range(BASE_STATUS + STATUS_WIDTH -1, BASE_STATUS) = ST_XFER2D;
+
+				cout << "2. ifcmdQ:" << ifcmdQ[current] << endl;
 
 				xfer_buf_control.lock();
 
@@ -252,6 +256,8 @@ void IF_QUEUE::close_cmd(void)
 			// Host supposes that command will be processed in the sequence of FIFO..
 			if (ifcmdQ[tail].range(BASE_TAG + TAG_WIDTH -1, BASE_TAG) == querydata_inout.read())
 			{
+				cout << "3. ifcmdQ:" << ifcmdQ[tail] << endl;
+				
 				if (ifcmdQ[tail].range(BASE_CMD + CMD_WIDTH - 1, BASE_CMD) == BSM_WRITE)
 				{
 					if ((ifcmdQ[tail].range(BASE_STATUS + STATUS_WIDTH -1, BASE_STATUS) == ST_DONEB) ||
