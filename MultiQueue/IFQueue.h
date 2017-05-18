@@ -8,7 +8,8 @@
 #ifndef IFQUEUE_H_
 #define IFQUEUE_H_
 
-#pragma warning( disable : 4244)  // type conversion from sc_uint to sc_int or int... static_cast doesn't work
+ // type conversion from sc_uint to sc_int or int... static_cast doesn't work
+#pragma warning( disable : 4244)  
 
 #include <systemc.h>
 #include "hd_multiqueue.h"
@@ -31,17 +32,21 @@ SC_MODULE(IF_QUEUE) {
 	sc_out<sc_biguint<MDATA_WIDTH> >	cmd_out;
 	sc_in<bool>							status_update_enable;
 	sc_in<sc_uint<8> >					cmdq_index;
-
+	// for Query command 
 	sc_in<bool>							queryin_select;
 	sc_out<bool>						queryout_select;
 	sc_inout<sc_uint<8> >				querydata_inout;
 
+	/*
+	Command Queue length is 32.. When host issueing new command, host has to confirm if the number of 
+	pending commands reaches the limit. Device won't check this. 
+	*/
 	sc_biguint<MDATA_WIDTH>	ifcmdQ[MAX_CMDQ_DEPTH]; // 32 Byte x 32 Queue Depth
 	sc_uint<8>	head, tail, current;
 	sc_uint<8> in_offset, out_offset;
-	sc_event ev_complete;
-	sc_mutex xfer_buf_control;
-
+	sc_event ev_complete; // when handling each command, ev_complete is used to confirm if data xfer 
+						  // between host and xfer (or IO) buffer is done. 
+	sc_mutex xfer_buf_control; // for operation synchronization. 
 
 	void core_process(void);
 	void receive_cmd(void);

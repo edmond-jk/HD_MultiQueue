@@ -24,7 +24,7 @@ SC_MODULE(xfer_buffer) {
 	sc_in<bool>						clock_fpga;
 	sc_in<bool>						xfer_buf_select;
 	sc_in<bool>						mwrite_enable;
-	sc_in<sc_uint<32> > 				tbm_address; // 20bit
+	sc_in<sc_uint<32> > 			tbm_address; // 20bit
 	sc_out<bool>					xfer_complete;
 
 	// xfer buffer <-> tbm

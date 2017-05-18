@@ -361,10 +361,24 @@ void test_case_2(void)
 
 int sc_main(int argc, char**argv)
 {
-	// (tbm + xfer_buffer) test
-//	test_case_1();
+	int testCase = 1;
 
-	test_case_2();
+	switch (testCase)
+	{
+		case 0:
+			//(tbm + xfer_buffer ) test
+			test_case_1(); 
+			break;
+				
+		case 1:
+			//(tbm + xfer_buffer + IFQueue) test
+			test_case_2();
+			break;
+
+		default:
+			break;
+
+	}
 
 	return 0;
 
